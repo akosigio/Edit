@@ -1,0 +1,15 @@
+/* Set the size of the barcode image */
+.barcode {
+    width: 200px;
+    height: auto;
+}
+/* Hide all elements except the barcodes */
+@media print {
+    body * {
+        display: none;
+    }
+    .barcode {
+        display: block;
+        page-break-after: always;
+    }
+}

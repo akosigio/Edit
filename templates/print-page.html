@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Print Page</title>
+</head>
+<body>
+    <div class="m-auto text-center">
+        {% for i in range(50) %}
+            <img src="/static/img/{{barcode_number}}.svg" alt="barcode image">
+        {% endfor %}
+     </div>  
+</body>
+</html>
+<script>
+    window.print();
+</script>
