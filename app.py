@@ -61,12 +61,11 @@ def insert():
         price = request.form.get('price')
         quantity = request.form.get('quantity')
         m_category = request.form.get('m_category')
-
         # Check if m_category is present in the request
         if m_category is None:
             flash("m_category is missing in the request")
             return redirect(url_for('product'))
-
+        
         # generate the barcode number
         barcode_number = generate_random_number()
         # set the barcode format
