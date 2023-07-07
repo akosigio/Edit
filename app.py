@@ -61,7 +61,6 @@ def insert():
         price = request.form.get('price')
         quantity = request.form.get('quantity')
         m_category = request.form.get('m_category')
-        s_category = request.form.get('s_category')
 
         # Check if m_category is present in the request
         if m_category is None:
@@ -84,7 +83,7 @@ def insert():
         barcode_path = f"static/img/{barcode_number}"
         barcode_format.save(barcode_path, options=saving_options, text=product_info)
         cursor = connection.cursor()
-        cursor.execute("INSERT INTO product (p_name, price, quantity, m_category, s_category, barcode) VALUES (%s, %s, %s, %s, %s, %s)", (p_name, price, quantity, m_category, s_category, barcode_number))
+        cursor.execute("INSERT INTO product (p_name, price, quantity, m_category, barcode) VALUES (%s, %s, %s, %s, %s)", (p_name, price, quantity, m_category, barcode_number))
         connection.commit()
         flash("Data Inserted Successfully")
         return redirect(url_for('product'))
@@ -107,9 +106,8 @@ def update():
         price = request.form['price']
         quantity = request.form['quantity']
         m_category = request.form['m_category']
-        s_category = request.form['s_category']
         cursor = connection.cursor()
-        cursor.execute("UPDATE product SET p_name=%s, price=%s, quantity=%s, m_category=%s, s_category=%s, WHERE id=%s", (p_name, price, quantity, m_category, s_category, id_data))
+        cursor.execute("UPDATE product SET p_name=%s, price=%s, quantity=%s, m_category=%s, WHERE id=%s", (p_name, price, quantity, m_category, id_data))
         connection.commit()
         flash("Data Updated Successfully")
         return redirect(url_for('product'))

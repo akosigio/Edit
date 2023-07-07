@@ -173,8 +173,7 @@
       
              <table class="table table-striped">
                <tr>
-                    <th>Product Number</th>
-                    <th>Product Name</th>
+                    <th>Name</th>
                     <th>Price</th>
                     <th>Quantity</th>
                     <th>Action</th>
@@ -182,7 +181,6 @@
       
                       {% for row in product %}
                       <tr>
-                          <td>{{row.1}}</td>
                           <td>{{row.2}}</td>
                           <td>{{row.3}}</td>
                           <td>{{row.4}}</td>
@@ -222,10 +220,6 @@
                      <div class="form-group">
                         <label>Main Category:</label>
                         <input type="text" class="form-control" name="m_category" value="{{row.5 }}">
-                     </div>
-                     <div class="form-group">
-                        <label>Sub Category:</label>
-                        <input type="text" class="form-control" name="s_category" value="{{row.6 }}">
                      </div>
                      <div class="form-group">
                         <button class="btn btn-success" type="submit">Update</button>
@@ -283,70 +277,7 @@
                         </select>
                     </div>
                     
-                    <div class="form-group">
-                        <label>Sub Category : <span style="color:red">*</span></label>
-                        <select class="form-control semester" name="s_category" disabled>
-                            <option value="">Select Sub Category</option>
-                            <option value="Home Decor">Home Decor</option>
-                            <option value="Outdoor">Outdoor</option>
-                            <option value="Furniture">Furniture</option>
-                            <option value="Fashion">Fashion</option>
-                        </select>
-                    </div>
-                    
-                    <script>
-                        // Get the year and semester select elements
-                        var yearSelect = document.querySelector('.year');
-                        var semesterSelect = document.querySelector('.semester');
-                    
-                        // Add an event listener to the year select element
-                        yearSelect.addEventListener('change', function() {
-                            // Enable the semester select element
-                            semesterSelect.removeAttribute('disabled');
-                    
-                            // Clear all options from the semester select element
-                            semesterSelect.innerHTML = '';
-                    
-                            // Add the default "Select Semester" option
-                            var defaultOption = document.createElement('option');
-                            defaultOption.text = 'Select Sub Category';
-                            semesterSelect.add(defaultOption);
-                    
-                            // Add the semester options based on the selected year
-                            if (yearSelect.value === 'Home Decor') {
-                                var option1 = document.createElement('option');
-                                option1.text = 'Basket';
-                                semesterSelect.add(option1);
-                    
-                                var option2 = document.createElement('option');
-                                option2.text = 'Mirror';
-                                semesterSelect.add(option2);
-                            } else if (yearSelect.value === 'Outdoor') {
-                                var option1 = document.createElement('option');
-                                option1.text = 'Vase';
-                                semesterSelect.add(option1);
-                    
-                                var option2 = document.createElement('option');
-                                option2.text = 'Planters';
-                                semesterSelect.add(option2);
-                            } else if (yearSelect.value === 'Furniture') {
-                                var option1 = document.createElement('option');
-                                option1.text = 'Chair';
-                                semesterSelect.add(option1);
-                    
-                                var option2 = document.createElement('option');
-                                option2.text = 'Sofa';
-                                semesterSelect.add(option2);
-                            } else if (yearSelect.value === 'Fashion') {
-                                var option1 = document.createElement('option');
-                                option1.text = 'Slippers';
-                                semesterSelect.add(option1);
-                    
-                                var option2 = document.createElement('option');
-                                option2.text = 'Shoes';
-                                semesterSelect.add(option2);
-                            }
-                        });
+                   
                     </script>
                      <div class="form-group">
                         <button class="btn btn-success" type="submit">Insert Data</button>
