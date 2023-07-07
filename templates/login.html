@@ -36,6 +36,15 @@
             <div class="header-text mb-4">
                 <h2 class="header">WELCOME</h2>
               </div>
+              {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <div class="alert alert-danger">
+                {% for message in messages %}
+                {{ message }}
+                {% endfor %}
+                 </div>
+                    {% endif %}
+                      {% endwith %}
                 <form method="POST" action="/login">
                   <div class="input-group mb-3">
                       <input type="text" id="username" class="form-control form-control-lg bg-light fs-6" name="username" placeholder="Username" required>
@@ -45,7 +54,7 @@
                   </div>
                   <div class="input-group mb-5 d-flex justify-content-between">
                       <div class="form-check">
-                          <input type="checkbox" class="form-check-input" id="formCheck">
+                          <input type="checkbox" class="form-check-input" id="remember" name="remember">
                           <label for="formCheck" class="form-check-label text-secondary"><small>Remember Me</small></label>
                       </div>
                   </div>
