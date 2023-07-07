@@ -1,5 +1,5 @@
 import random
-from flask import Flask, flash, get_flashed_messages, redirect, render_template, request, session, url_for
+from flask import Flask, flash, get_flashed_messages,make_response,redirect, render_template, request, session, url_for
 import mysql.connector
 import barcode
 from barcode.writer import ImageWriter
@@ -30,19 +30,24 @@ def home():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    msg = ""
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        remember = request.form.get('remember')
         cursor.execute('SELECT * FROM user WHERE username=%s and password=%s', (username, password))
         record = cursor.fetchone()
         if record:
             session['loggedin'] = True
             session['username'] = record[1]
+            if remember:
+                # If the 'remember' checkbox is checked, set a cookie to remember the user
+                resp = make_response(redirect(url_for('home')))
+                resp.set_cookie('username', username)
+                return resp
             return redirect(url_for('home'))
         else:
-            msg = 'Invalid username or password'
-    return render_template('login.html', msg=msg)
+           flash('Incorrect username or password. Please try again.')
+    return render_template('login.html')
 
 
 @app.route('/print/<string:barcode_number>', methods=['GET'])
