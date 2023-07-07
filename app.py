@@ -52,9 +52,16 @@ def print(barcode_number):
 @app.route('/insert', methods=['POST'])
 def insert():
     if request.method == 'POST':
-        p_name = request.form['p_name']
-        price = request.form['price']
-        quantity = request.form['quantity']
+        p_name = request.form.get('p_name')
+        price = request.form.get('price')
+        quantity = request.form.get('quantity')
+        m_category = request.form.get('m_category')
+        s_category = request.form.get('s_category')
+
+        # Check if m_category is present in the request
+        if m_category is None:
+            flash("m_category is missing in the request")
+            return redirect(url_for('product'))
 
         # generate the barcode number
         barcode_number = generate_random_number()
@@ -72,7 +79,7 @@ def insert():
         barcode_path = f"static/img/{barcode_number}"
         barcode_format.save(barcode_path, options=saving_options, text=product_info)
         cursor = connection.cursor()
-        cursor.execute("INSERT INTO product (p_name, price, quantity, barcode) VALUES (%s, %s, %s, %s)", (p_name, price, quantity, barcode_number))
+        cursor.execute("INSERT INTO product (p_name, price, quantity, m_category, s_category, barcode) VALUES (%s, %s, %s, %s, %s, %s)", (p_name, price, quantity, m_category, s_category, barcode_number))
         connection.commit()
         flash("Data Inserted Successfully")
         return redirect(url_for('product'))
@@ -94,8 +101,10 @@ def update():
         p_name = request.form['p_name']
         price = request.form['price']
         quantity = request.form['quantity']
+        m_category = request.form['m_category']
+        s_category = request.form['s_category']
         cursor = connection.cursor()
-        cursor.execute("UPDATE product SET p_name=%s, price=%s, quantity=%s WHERE id=%s", (p_name, price, quantity, id_data))
+        cursor.execute("UPDATE product SET p_name=%s, price=%s, quantity=%s, m_category=%s, s_category=%s, WHERE id=%s", (p_name, price, quantity, m_category, s_category, id_data))
         connection.commit()
         flash("Data Updated Successfully")
         return redirect(url_for('product'))
