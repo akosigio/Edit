@@ -4070,7 +4070,7 @@ input[type="button"].btn-block {
 .nav-pills .nav-link.active,
 .nav-pills .show > .nav-link {
   color: #fff;
-  background-color: #392A23;
+  background-color: #333333;
 }
 
 .nav-fill > .nav-link,
@@ -6484,7 +6484,6 @@ button.bg-dark:hover,
 button.bg-dark:focus {
   background-color: #42444e !important;
 }
-
 .bg-white {
   background-color: #fff !important;
 }
@@ -9587,10 +9586,11 @@ button.bg-dark:focus {
 }
 
 .text-primary {
-  color: #4e73df !important;
+  color: #495867 !important;
 }
 
 a.text-primary:hover, a.text-primary:focus {
+
   color: #224abe !important;
 }
 
@@ -9603,15 +9603,15 @@ a.text-secondary:hover, a.text-secondary:focus {
 }
 
 .text-success {
-  color: #1cc88a !important;
+  color: #c18c5d !important;
 }
 
 a.text-success:hover, a.text-success:focus {
-  color: #13855c !important;
+  color: #8d7bac !important;
 }
 
 .text-info {
-  color: #36b9cc !important;
+  color: #ce796b !important;
 }
 
 a.text-info:hover, a.text-info:focus {
@@ -9619,7 +9619,7 @@ a.text-info:hover, a.text-info:focus {
 }
 
 .text-warning {
-  color: #f6c23e !important;
+  color: #68928E!important;
 }
 
 a.text-warning:hover, a.text-warning:focus {
@@ -10036,7 +10036,7 @@ a:focus {
 }
 
 .border-left-primary {
-  border-left: 0.25rem solid #4e73df !important;
+  border-left: 0.25rem solid #495867 !important;
 }
 
 .border-bottom-primary {
@@ -10047,12 +10047,13 @@ a:focus {
   border-left: 0.25rem solid #858796 !important;
 }
 
+
 .border-bottom-secondary {
   border-bottom: 0.25rem solid #858796 !important;
 }
 
 .border-left-success {
-  border-left: 0.25rem solid #1cc88a !important;
+  border-left: 0.25rem solid #8d7bac !important;
 }
 
 .border-bottom-success {
@@ -10060,7 +10061,7 @@ a:focus {
 }
 
 .border-left-info {
-  border-left: 0.25rem solid #36b9cc !important;
+  border-left: 0.25rem solid #ce796b !important;
 }
 
 .border-bottom-info {
@@ -10068,7 +10069,7 @@ a:focus {
 }
 
 .border-left-warning {
-  border-left: 0.25rem solid #f6c23e !important;
+  border-left: 0.25rem solid #68928E !important;
 }
 
 .border-bottom-warning {
@@ -10313,11 +10314,12 @@ a:focus {
 .topbar.navbar-light .navbar-nav .nav-item .nav-link:active {
   color: #858796;
 }
-
+.sidebar {
+  background: #333333;
+}
 .sidebar {
   width: 6.5rem;
   min-height: 100vh;
-  background: #392A23;
 }
 
 .sidebar .nav-item {
