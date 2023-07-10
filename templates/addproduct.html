@@ -1,4 +1,3 @@
-{% include "index.html" %}
 
 {% block body %}
 
@@ -27,11 +26,6 @@
             <label for="name">Main Category</label>
             <input type="text" class="form-control" name="m_category" id="m_category" required="1">
         </div>
-        <div class="form-group">
-                        <label>Main Category:</label>
-                        <input type="text" class="form-control" name="m_category" value="{{row.5 }}">
-                     </div>
-        
             <input type="hidden" name="id" value="1">
             <input type="hidden" name="action" value="edit">
             <input type="submit" class="btn btn-success" name="submit" value="Add Product">
@@ -41,4 +35,4 @@
 
 {% endblock %}
 
-{% include "footer.html" %}
+

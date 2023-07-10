@@ -152,157 +152,174 @@
       </nav>
       {% block body %}
       <div class="container">
-          <div class="row">
-              <div class="col md-12">
-                <h2>Product List <button type="button" class="btn btn-dark float-right mb-3" data-toggle="modal" data-target="#myModal">Add Product</button></h2>
+        <div class="row">
+          <div class="col md-12">
+            <h2>Product List</h2>
+            <div class="btn-group" role="group" aria-label="Category Buttons">
+              <button type="button" class="btn btn-secondary" data-category="all">All</button>
+              <button type="button" class="btn btn-secondary" data-category="Home Decor">Home Decor</button>
+              <button type="button" class="btn btn-secondary" data-category="Outdoor Decor">Outdoor Decor</button>
+              <button type="button" class="btn btn-secondary" data-category="Furniture">Furniture</button>
+              <button type="button" class="btn btn-secondary" data-category="Fashion">Fashion</button>
+            </div>
+            <button type="button" class="btn btn-dark float-right mb-3" data-toggle="modal" data-target="#myModal">Add Product</button>
                 
-          {%with messages = get_flashed_messages()%}
-          {%if messages%}
-          {% for message in messages %}
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            {% for message in messages %}
       
-          <div class="alert alert-success alert-dismissable" role="alert">
-           <button type="button" class="close" data-dismiss="alert" aria-label ="close">
-               <span aria-hidden="true">&times;</span>
-           </button>
-              {{message}}
-          </div>
+            <div class="alert alert-success alert-dismissable" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              {{ message }}
+            </div>
       
-          {%endfor%}
-          {%endif%}
-          {%endwith%}
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
       
-             <table class="table table-striped">
-               <tr>
-                    <th>Product Number</th>
-                    <th>Product Name</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Action</th>
-               </tr>
+            <table class="table table-striped">
+              <tr>
+                <th>Product Number</th>
+                <th>Product Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Action</th>
+              </tr>
       
-                      {% for row in product %}
-                      <tr>
-                          <td>{{row.1}}</td>
-                          <td>{{row.2}}</td>
-                          <td>{{row.3}}</td>
-                          <td>{{row.4}}</td>
-                          <td>
+              {% for row in product %}
+              <tr data-category="{{ row.5 }}">
+                <td>{{ row.1 }}</td>
+                <td>{{ row.2 }}</td>
+                <td>{{ row.3 }}</td>
+                <td>{{ row.4 }}</td>
+                <td>
+                  <a href="/update/{{ row.0 }}" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modaledit{{ row.0 }}">Edit</a>
+                  <a href="/delete/{{ row.0 }}" class="btn btn-danger btn-xs" onclick="return confirm('Are You Sure For Delete?')">Delete</a>
+                  <a href="{{ url_for('print', barcode_number=row[1]) }}" class="btn btn-outline-dark">Print</a>
+                </td>
+              </tr>
       
-                           <a href="/update/{{row.0}}" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modaledit{{row.0}}">Edit</a>
-                           <a href="/delete/{{ row.0 }}" class="btn btn-danger btn-xs" onclick="return confirm('Are You Sure For Delete?')">Delete</a>
-                           <a href="{{ url_for('print', barcode_number=row[1]) }}" class="btn btn-outline-dark">Print</a>
-                          </td>
-                      </tr>
-      
-                      <div id="modaledit{{row.0}}" class="modal fade" role="dialog">
-                        <div class="modal-dialog">
-                          <div class="modal-content">
-                            <div class="modal-header">
-                              <h5 class="modal-title">Update Information</h5>
-                              <button type="button" class="close ml-auto" data-dismiss="modal">&times;</button>
-                            </div>
-                      
-                            <div class="modal-body">
-                              <form action="{{ url_for('update') }}" method="POST">
-                                <div class="form-group">
-                                  <label>Product Name:</label>
-                                  <input type="hidden" name="id" value="{{row.0}}">
-                                  <input type="text" class="form-control" name="p_name" value="{{row.2}}">
-                                </div>
-                      
-                                <div class="form-group">
-                                  <label>Price:</label>
-                                  <input type="text" class="form-control" name="price" value="{{row.3}}">
-                                </div>
-                      
-                                <div class="form-group">
-                                  <label>Quantity:</label>
-                                  <input type="text" class="form-control" name="quantity" value="{{row.4 }}">
-                                </div>
-                      
-                                <div class="form-group">
-                                    <label>Main Category:</label>
-                                    <select class="form-control year" name="m_category">
-                                        <option value="Home Decor"{% if row.5 == 'Home Decor' %} selected{% endif %}>Home Decor</option>
-                                        <option value="Outdoor Decor"{% if row.5 == 'Outdoor Decor' %} selected{% endif %}>Outdoor Decor</option>
-                                        <option value="Furniture"{% if row.5 == 'Furniture' %} selected{% endif %}>Furniture</option>
-                                        <option value="Fashion"{% if row.5 == 'Fashion' %} selected{% endif %}>Fashion</option>
-                                    </select>
-                                  </div>
-                      
-                                <div class="form-group">
-                                  <button class="btn btn-success" type="submit">Update</button>
-                                </div>
-                      
-                              </form>
-                      
-                            </div>
-                      
-                            <div class="modal-footer">
-                              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            </div>
-                      
-                          </div>
-                        </div>
-                      </div>
-                      
-                      {% endfor %}
-                      
-                      <!-- Insert Modal -->
-                      
-                      <div id="myModal" class="modal fade" role="dialog">
-                        <div class="modal-dialog">
-                          <div class="modal-content">
-                            <div class="modal-header">
-                              <h5 class="modal-title">Please Insert Data</h5>
-                              <button type="button" class="close ml-auto" data-dismiss="modal">&times;</button>
-                            </div>
-                      
-                      
-                            <div class="modal-body">
-                              <form action="{{ url_for('insert') }}" method="POST">
-                                <div class="form-group">
-                                  <label>Product Name:</label>
-                                  <input type="text" class="form-control" name="p_name" required="1">
-                                </div>
-                      
-                                <div class="form-group">
-                                  <label>Price:</label>
-                                  <input type="text" class="form-control" name="price" required="1">
-                                </div>
-                      
-                                <div class="form-group">
-                                  <label>Quantity:</label>
-                                  <input type="text" class="form-control" name="quantity" required="1">
-                                </div>
-                      
-                                <div class="form-group">
-                                  <label>Main Category:</label>
-                                  <select class="form-control year" name="m_category">
-                                    <option value="">Select Main Category</option>
-                                    <option value="Home Decor">Home Decor</option>
-                                    <option value="Outdoor Decor">Outdoor Decor</option>
-                                    <option value="Furniture">Furniture</option>
-                                    <option value="Fashion">Fashion</option>
-                                  </select>
-                                </div>
-                      
-                                <div class="form-group">
-                                  <button class="btn btn-success" type="submit">Insert Data</button>
-                                </div>
-                              </form>
-                            </div>
-                      
-                            <div class="modal-footer">
-                              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            
-      
-                                {% endblock %}
-                            </div>
-       
-                        </div>
+              <div id="modaledit{{ row.0 }}" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title">Update Information</h5>
+                      <button type="button" class="close ml-auto" data-dismiss="modal">&times;</button>
                     </div>
+                      
+                    <div class="modal-body">
+                      <form action="{{ url_for('update') }}" method="POST">
+                        <div class="form-group">
+                          <label>Product Name:</label>
+                          <input type="hidden" name="id" value="{{ row.0 }}">
+                          <input type="text" class="form-control" name="p_name" value="{{ row.2 }}">
+                        </div>
+                      
+                        <div class="form-group">
+                          <label>Price:</label>
+                          <input type="text" class="form-control" name="price" value="{{ row.3 }}">
+                        </div>
+                      
+                        <div class="form-group">
+                          <label>Quantity:</label>
+                          <input type="text" class="form-control" name="quantity" value="{{ row.4 }}">
+                        </div>
+                      
+                        <div class="form-group">
+                          <label>Main Category:</label>
+                          <select class="form-control year" name="m_category">
+                            <option value="Home Decor"{% if row.5 == 'Home Decor' %} selected{% endif %}>Home Decor</option>
+                            <option value="Outdoor Decor"{% if row.5 == 'Outdoor Decor' %} selected{% endif %}>Outdoor Decor</option>
+                            <option value="Furniture"{% if row.5 == 'Furniture' %} selected{% endif %}>Furniture</option>
+                            <option value="Fashion"{% if row.5 == 'Fashion' %} selected{% endif %}>Fashion</option>
+                          </select>
+                        </div>
+                      
+                        <div class="form-group">
+                          <button class="btn btn-success" type="submit">Update</button>
+                        </div>
+                      
+                      </form>
+                    </div>
+                      
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                      
+                  </div>
+                </div>
+              </div>
+                      
+              {% endfor %}
+                      
+              <!-- Insert Modal -->
+                      
+              <div id="myModal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title">Please Insert Data</h5>
+                      <button type="button" class="close ml-auto" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                      <form action="{{ url_for('insert') }}" method="POST">
+                        <div class="form-group">
+                          <label>Product Name:</label>
+                          <input type="text" class="form-control" name="p_name" required="1">
+                        </div>
+                        <div class="form-group">
+                          <label>Price:</label>
+                          <input type="text" class="form-control" name="price" required="1">
+                        </div>
+                        <div class="form-group">
+                          <label>Quantity:</label>
+                          <input type="text" class="form-control" name="quantity" required="1">
+                        </div>
+                        <div class="form-group">
+                          <label>Main Category:</label>
+                          <select class="form-control year" name="m_category">
+                            <option value="">Select Main Category</option>
+                            <option value="Home Decor">Home Decor</option>
+                            <option value="Outdoor Decor">Outdoor Decor</option>
+                            <option value="Furniture">Furniture</option>
+                            <option value="Fashion">Fashion</option>
+                          </select>
+                        </div>
+                        <div class="form-group">
+                          <button class="btn btn-success" type="submit">Insert Data</button>
+                        </div>
+                      </form>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </table>
+          </div>
+        </div>
+      </div>
 
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <script>
+        // Show all products by default
+        $('tr').show();
+
+        // Filter products based on category button click
+        $('button[data-category]').click(function() {
+          var category = $(this).data('category');
+          $('tr').hide();
+          if (category === 'all') {
+            $('tr').show();
+          } else {
+            $('tr[data-category="' + category + '"]').show();
+          }
+        });
+      </script>
+    {% endblock %}
 
     <!-- End of Main Content -->
 
@@ -312,7 +329,7 @@
                     <div class="copyright text-center my-auto">
                         <span>Copyright &copy; EM-AR Handicraft 2023</span>
                     </div>
-             
+                </div>
             </footer>
             <!-- End of Footer -->
 
