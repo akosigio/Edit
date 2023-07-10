@@ -106,7 +106,7 @@ def update():
         quantity = request.form['quantity']
         m_category = request.form['m_category']
         cursor = connection.cursor()
-        cursor.execute("UPDATE product SET p_name=%s, price=%s, quantity=%s, m_category=%s, WHERE id=%s", (p_name, price, quantity, m_category, id_data))
+        cursor.execute("UPDATE product SET p_name=%s, price=%s, quantity=%s, m_category=%s WHERE id=%s", (p_name, price, quantity, m_category, id_data))
         connection.commit()
         flash("Data Updated Successfully")
         return redirect(url_for('product'))

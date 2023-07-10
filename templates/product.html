@@ -195,114 +195,113 @@
                       </tr>
       
                       <div id="modaledit{{row.0}}" class="modal fade" role="dialog">
-         <div class="modal-dialog">
-            <div class="modal-content">
-               <div class="modal-header">
-                 <h5 class="modal-title">Update Information</h5>
-                  <button type="button" class="close ml-auto" data-dismiss="modal">&times;</button>
-               </div>
-               
-               <div class="modal-body">
-                  <form action="{{ url_for('update') }}" method="POST">
-                     <div class="form-group">
-                        <label>Product Name:</label>
-                         <input type="hidden"  name="id" value="{{row.0}}">
-                         <input type="text" class="form-control" name="p_name" value="{{row.2}}">
-                     </div>
-      
-                     <div class="form-group">
-                        <label>Price:</label>
-                        <input type="text" class="form-control" name="price" value="{{row.3}}">
-                     </div>
-      
-                     <div class="form-group">
-                        <label>Quantity:</label>
-                        <input type="text" class="form-control" name="quantity" value="{{row.4 }}">
-                     </div>
-
-                     <div class="form-group">
-                        <label>Main Category:</label>
-                        <input type="text" class="form-control" name="m_category" value="{{row.5 }}">
-                     </div>
-
-                     <div class="form-group">
-                        <button class="btn btn-success" type="submit">Update</button>
-                     </div>
-      
-                  </form>
-      
-               </div>
-      
-               <div class="modal-footer">
-                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-               </div>
-      
-   
-                      {% endfor  %}
-      
-                      </tbody>
-                  </table>
-           
-      <!-- Modal -->
-      
-      <div id="myModal" class="modal fade" role="dialog">
-         <div class="modal-dialog">
-            <div class="modal-content">
-               <div class="modal-header">
-                <h5 class="modal-title">Please Insert Data</h5>
-                <button type="button" class="close ml-auto" data-dismiss="modal">&times;</button>
-               </div>
-            
-        
-               <div class="modal-body">
-                  <form action="{{ url_for('insert') }}" method="POST">
-                     <div class="form-group">
-                        <label>Product Name:</label>
-                        <input type="text" class="form-control" name="p_name" required="1">
-                     </div>
-      
-                      <div class="form-group">
-                        <label>Price:</label>
-                        <input type="text" class="form-control" name="price" required="1">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title">Update Information</h5>
+                              <button type="button" class="close ml-auto" data-dismiss="modal">&times;</button>
+                            </div>
+                      
+                            <div class="modal-body">
+                              <form action="{{ url_for('update') }}" method="POST">
+                                <div class="form-group">
+                                  <label>Product Name:</label>
+                                  <input type="hidden" name="id" value="{{row.0}}">
+                                  <input type="text" class="form-control" name="p_name" value="{{row.2}}">
+                                </div>
+                      
+                                <div class="form-group">
+                                  <label>Price:</label>
+                                  <input type="text" class="form-control" name="price" value="{{row.3}}">
+                                </div>
+                      
+                                <div class="form-group">
+                                  <label>Quantity:</label>
+                                  <input type="text" class="form-control" name="quantity" value="{{row.4 }}">
+                                </div>
+                      
+                                <div class="form-group">
+                                    <label>Main Category:</label>
+                                    <select class="form-control year" name="m_category">
+                                        <option value="Home Decor"{% if row.5 == 'Home Decor' %} selected{% endif %}>Home Decor</option>
+                                        <option value="Outdoor Decor"{% if row.5 == 'Outdoor Decor' %} selected{% endif %}>Outdoor Decor</option>
+                                        <option value="Furniture"{% if row.5 == 'Furniture' %} selected{% endif %}>Furniture</option>
+                                        <option value="Fashion"{% if row.5 == 'Fashion' %} selected{% endif %}>Fashion</option>
+                                    </select>
+                                  </div>
+                      
+                                <div class="form-group">
+                                  <button class="btn btn-success" type="submit">Update</button>
+                                </div>
+                      
+                              </form>
+                      
+                            </div>
+                      
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                      
+                          </div>
+                        </div>
                       </div>
+                      
+                      {% endfor %}
+                      
+                      <!-- Insert Modal -->
+                      
+                      <div id="myModal" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title">Please Insert Data</h5>
+                              <button type="button" class="close ml-auto" data-dismiss="modal">&times;</button>
+                            </div>
+                      
+                      
+                            <div class="modal-body">
+                              <form action="{{ url_for('insert') }}" method="POST">
+                                <div class="form-group">
+                                  <label>Product Name:</label>
+                                  <input type="text" class="form-control" name="p_name" required="1">
+                                </div>
+                      
+                                <div class="form-group">
+                                  <label>Price:</label>
+                                  <input type="text" class="form-control" name="price" required="1">
+                                </div>
+                      
+                                <div class="form-group">
+                                  <label>Quantity:</label>
+                                  <input type="text" class="form-control" name="quantity" required="1">
+                                </div>
+                      
+                                <div class="form-group">
+                                  <label>Main Category:</label>
+                                  <select class="form-control year" name="m_category">
+                                    <option value="">Select Main Category</option>
+                                    <option value="Home Decor">Home Decor</option>
+                                    <option value="Outdoor Decor">Outdoor Decor</option>
+                                    <option value="Furniture">Furniture</option>
+                                    <option value="Fashion">Fashion</option>
+                                  </select>
+                                </div>
+                      
+                                <div class="form-group">
+                                  <button class="btn btn-success" type="submit">Insert Data</button>
+                                </div>
+                              </form>
+                            </div>
+                      
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            
       
-                    <div class="form-group">
-                        <label>Quantity:</label>
-                        <input type="text" class="form-control" name="quantity" required="1">
-                     </div>
-
-                     <div class="form-group">
-                        <label>Main Category : <span style="color:red">*</span></label>
-                        <select class="form-control year" name="m_category">
-                            <option value="">Select Main Category</option>
-                            <option value="Home Decor">Home Decor</option>
-                            <option value="Outdoor">Outdoor Decor</option>
-                            <option value="Furniture">Furniture</option>
-                            <option value="Fashion">Fashion</option>
-                        </select>
-                    </div>
-                     
-                     <div class="form-group">
-                        <button class="btn btn-success" type="submit">Insert Data</button>
-                     </div>
-                  </form>
-               </div>
-      
-               <div class="modal-footer">
-                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-               </div>
-      
-            </div>
-         </div>
-      </div>
-          </div>
-     
-      
-      {% endblock %}
-         </div>
+                                {% endblock %}
+                            </div>
        
-        </div>
-    </div>
+                        </div>
+                    </div>
 
 
     <!-- End of Main Content -->
