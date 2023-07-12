@@ -6,9 +6,6 @@ from barcode.writer import ImageWriter
 from PIL import ImageFont
 from barcode import UPCA
 
-
-
-
 connection = mysql.connector.connect(host='localhost', database='emar', user='root', password='')
 cursor = connection.cursor()
 app = Flask(__name__)
