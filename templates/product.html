@@ -21,7 +21,10 @@
     <link href="/static/css/sb-admin-2.min.css" rel="stylesheet">
     <link href="/static/css/barcode.css" rel="stylesheet">
 
-</head>
+    <link><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+
+
+  </head>
 <body id="page-top">
    <div id="wrapper">
       <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
@@ -131,14 +134,7 @@
                 <!-- Dropdown - User Information -->
                 <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                     aria-labelledby="userDropdown">
-                    <a class="dropdown-item" href="#">
-                        <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                        Profile
-                    </a>
-                    <a class="dropdown-item" href="#">
-                        <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                        Settings
-                    </a>
+                   
                     
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="/templates/login.html" data-toggle="modal" data-target="#logoutModal">
@@ -154,15 +150,15 @@
       <div class="container">
         <div class="row">
           <div class="col md-12">
-            <h2>Product List</h2>
+            <h1 class="h3 mb-0 text-gray-800">Product List</h1>
             <div class="btn-group" role="group" aria-label="Category Buttons">
-              <button type="button" class="btn btn-secondary" data-category="all">All</button>
-              <button type="button" class="btn btn-secondary" data-category="Home Decor">Home Decor</button>
-              <button type="button" class="btn btn-secondary" data-category="Outdoor Decor">Outdoor Decor</button>
-              <button type="button" class="btn btn-secondary" data-category="Furniture">Furniture</button>
-              <button type="button" class="btn btn-secondary" data-category="Fashion">Fashion</button>
+              <button type="button" class="btn btn-outline-dark" data-category="all">All</button>
+              <button type="button" class="btn btn-outline-dark" data-category="Home Decor">Home Decor</button>
+              <button type="button" class="btn btn-outline-dark" data-category="Outdoor Decor">Outdoor Decor</button>
+              <button type="button" class="btn btn-outline-dark" data-category="Furniture">Furniture</button>
+              <button type="button" class="btn btn-outline-dark" data-category="Fashion">Fashion</button>
             </div>
-            <button type="button" class="btn btn-dark float-right mb-3" data-toggle="modal" data-target="#myModal">Add Product</button>
+            <button type="button" class="btn btn-info float-right mb-3" data-toggle="modal" data-target="#myModal">Add Product</button>
                 
             {% with messages = get_flashed_messages() %}
             {% if messages %}
@@ -195,9 +191,14 @@
                 <td>{{ row.3 }}</td>
                 <td>{{ row.4 }}</td>
                 <td>
-                  <a href="/update/{{ row.0 }}" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modaledit{{ row.0 }}">Edit</a>
-                  <a href="/delete/{{ row.0 }}" class="btn btn-danger btn-xs" onclick="return confirm('Are You Sure For Delete?')">Delete</a>
-                  <a href="{{ url_for('print', barcode_number=row[1]) }}" class="btn btn-outline-dark">Print</a>
+                  <a href="/update/{{ row.0 }}" class="btn-edit" data-toggle="modal" data-target="#modaledit{{ row.0 }}"><span class="material-symbols-outlined">
+                    edit
+                    </span></a>
+                  <a href="/delete/{{ row.0 }}" class="btn-delete" onclick="return confirm('Are You Sure For Delete?')"><span class="material-symbols-outlined">
+                    delete
+                    </span></a>
+                  <a href="{{ url_for('print', barcode_number=row[1]) }}" class="btn-print" type="button"><span class="material-symbols-outlined">print</span></a>
+               
                 </td>
               </tr>
       
