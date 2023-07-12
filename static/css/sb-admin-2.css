@@ -380,6 +380,7 @@ h4, .h4 {
 
 h5, .h5 {
   font-size: 1.25rem;
+  color:#333333;
 }
 
 h6, .h6 {
@@ -2887,7 +2888,7 @@ fieldset:disabled a.btn {
 }
 
 .btn-outline-dark:focus, .btn-outline-dark.focus {
-  box-shadow: 0 0 0 0.2rem rgba(90, 92, 105, 0.5);
+  box-shadow: none;
   background-color: #333333;
   color: #fff;
 }
@@ -2906,7 +2907,7 @@ fieldset:disabled a.btn {
 
 .btn-outline-dark:not(:disabled):not(.disabled):active:focus, .btn-outline-dark:not(:disabled):not(.disabled).active:focus,
 .show > .btn-outline-dark.dropdown-toggle:focus {
-  box-shadow: 0 0 0 0.2rem rgba(90, 92, 105, 0.5);
+  box-shadow: none;
 }
 
 .btn-link {
@@ -6781,6 +6782,66 @@ button.bg-dark:focus {
     display: inline-flex !important;
   }
 }
+.material-symbols-outlinededit{
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 25px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  color: #333333;
+}
+.material-symbols-outlinededit:hover{
+  color: var(--primary);
+}
+.material-symbols-outlineddelete {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 25px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  color: #333333;
+}
+.material-symbols-outlineddelete:hover{
+  color: red;
+}
+
+.material-symbols-outlinedprint {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 25px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  color: #333333;
+}
+.material-symbols-outlinedprint:hover{
+  color: indigo;
+}
+
+
 .btn-print{
   width: 50px;
   height: 50px;
@@ -6795,7 +6856,7 @@ button.bg-dark:focus {
 }
 
 .btn-print:hover{
-background-color: #333333;
+background-color: #9F5389;
 color: white;
 }
 .btn-delete{
@@ -6812,7 +6873,7 @@ color: white;
 }
 
 .btn-delete:hover{
-background-color: #333333;
+background-color: red;
 color: white;
 }
 .btn-edit{
@@ -6827,10 +6888,8 @@ color: white;
   border: none;
   cursor:pointer;
 }
-
 .btn-edit:hover{
-background-color: #333333;
-color: white;
+background-color: #6610f2;
 }
 @media print {
   .d-print-none {
