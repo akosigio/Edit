@@ -5,6 +5,7 @@ from flask import Flask, flash, get_flashed_messages,make_response,redirect, ren
 import mysql.connector
 import MySQLdb.cursors
 import barcode
+import hashlib
 from barcode.writer import ImageWriter
 from PIL import ImageFont
 from barcode import UPCA
@@ -22,8 +23,8 @@ def index():
 
 @app.route('/dashboard')
 def home():
-    if 'loggedin' in session:
-        return render_template('index.html', username=session['username'])
+    if 'name' in session:
+        return render_template('index.html', name=session['name'])
     else:
         return redirect(url_for('login'))
 
@@ -31,23 +32,102 @@ def home():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
+        email = request.form['email']
         password = request.form['password']
-        remember = request.form.get('remember')
-        cursor.execute('SELECT * FROM user WHERE username=%s and password=%s', (username, password))
+        cursor = connection.cursor()
+        cursor.execute("SELECT * FROM users WHERE email = %s AND password = %s", (email, hashlib.md5(password.encode()).hexdigest()))
         record = cursor.fetchone()
         if record:
-            session['loggedin'] = True
-            session['username'] = record[1]
-            if remember:
-                # If the 'remember' checkbox is checked, set a cookie to remember the user
-                resp = make_response(redirect(url_for('home')))
-                resp.set_cookie('username', username)
-                return resp
+            session['name'] = record[1]
+            if record[4] == 'admin':
+                return redirect(url_for('home'))
+            elif record[4] == 'user':
+                return redirect(url_for('user'))
             return redirect(url_for('home'))
         else:
-           flash('Incorrect username or password. Please try again.')
+            flash('Incorrect username or password. Please try again.')
     return render_template('login.html')
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    message = ''
+    if request.method == 'POST' and 'name' in request.form and 'password' in request.form and 'email' in request.form:
+        userName = request.form['name']
+        password = request.form['password']
+        email = request.form['email']
+        role = request.form['role']
+        country = request.form['country']
+        cursor = connection.cursor()
+        cursor.execute('SELECT * FROM users WHERE email = %s', (email,))
+        account = cursor.fetchone()
+        if account:
+            message = 'User already exists!'
+        elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
+            message = 'Invalid email address!'
+        elif not userName or not password or not email:
+            message = 'Please fill out the form!'
+        else:
+            cursor.execute('INSERT INTO users VALUES (NULL, %s, %s, %s, %s, %s)', (userName, email, password, role, country))
+            connection.commit()
+            message = 'New user created!'
+    elif request.method == 'POST':
+        message = 'Please fill out the form!'
+    return redirect(url_for('users'))
+
+@app.route('/users')
+def users():
+    cursor = connection.cursor()
+    cursor.execute('SELECT * FROM users')
+    users = cursor.fetchall()
+    return render_template('users.html', users=users)
+
+@app.route('/edit', methods=['GET', 'POST'])
+def edit():
+    if request.method == 'POST':
+        user_id = request.form['id']
+        name = request.form['name']
+        password = request.form['password']
+        role = request.form['role']
+        country = request.form['country']
+
+        # Update the user details in the database
+        cursor = connection.cursor()
+        cursor.execute('UPDATE users SET name=%s, role=%s, password=%s,country=%s WHERE id=%s', (name, role, password, country, user_id))
+        connection.commit()
+
+        flash('User details updated successfully', 'success')
+        return redirect(url_for('users'))
+
+@app.route('/password_change', methods=['GET', 'POST'])
+def password_change():
+    message = ''
+    if 'loggedin' in session:
+        changePassUserId = request.args.get('id')
+        if request.method == 'POST' and 'password' in request.form and 'confirm_pass' in request.form and 'userid' in request.form:
+            password = request.form['password']
+            confirm_pass = request.form['confirm_pass']
+            userId = request.form['id']
+            if not password or not confirm_pass:
+                message = 'Please fill out the form!'
+            elif password != confirm_pass:
+                message = 'Confirm password is not equal!'
+            else:
+                cursor = connection.cursor()
+                cursor.execute('UPDATE users SET password=%s WHERE id=%s', (password, userId,))
+                connection.commit()
+                message = 'Password updated!'
+        elif request.method == 'POST':
+            message = 'Please fill out the form!'
+        return render_template('password_change.html', message=message, changePassUserId=changePassUserId)
+    return redirect(url_for('login'))
+
+@app.route('/remove/<int:userid>', methods=['GET', 'POST'])
+def remove(userid):
+    cursor = connection.cursor()
+    cursor.execute('DELETE FROM users WHERE id = %s', (userid,))
+    connection.commit()
+    message ='User deleted!'
+    return redirect(url_for('users', message=message))
 
 
 @app.route('/print/<string:barcode_number>', methods=['GET'])
@@ -126,106 +206,7 @@ def product():
     messages = get_flashed_messages()
     return render_template('product.html', product=data, messages=messages)
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    message = ''
-    if request.method == 'POST' and 'name' in request.form and 'password' in request.form and 'email' in request.form:
-        userName = request.form['name']
-        password = request.form['password']
-        email = request.form['email']
-        role = request.form['role']
-        country = request.form['country']
-        cursor = connection.cursor()
-        cursor.execute('SELECT * FROM users WHERE email = %s', (email,))
-        account = cursor.fetchone()
-        if account:
-            message = 'User already exists!'
-        elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
-            message = 'Invalid email address!'
-        elif not userName or not password or not email:
-            message = 'Please fill out the form!'
-        else:
-            cursor.execute('INSERT INTO users VALUES (NULL, %s, %s, %s, %s, %s)', (userName, email, password, role, country))
-            connection.commit()
-            message = 'New user created!'
-    elif request.method == 'POST':
-        message = 'Please fill out the form!'
-    return render_template('register.html', message=message)
 
-@app.route('/users')
-def users():
-    if 'loggedin' in session:
-        cursor = connection.cursor()
-        cursor.execute('SELECT * FROM users')
-        users = cursor.fetchall()
-        return render_template('users.html', users=users)
-    return redirect(url_for('login'))
-
-@app.route('/edit', methods=['GET', 'POST'])
-def edit():
-    message = ''
-    if 'loggedin' in session:
-        editUserId = request.args.get('id')
-        cursor = connection.cursor()
-        cursor.execute('SELECT * FROM users WHERE id = %s', (editUserId,))
-        editUser = cursor.fetchone()
-        if request.method == 'POST' and 'name' in request.form and 'id' in request.form and 'role' in request.form and 'country' in request.form:
-            userName = request.form['name']
-            role = request.form['role']
-            country = request.form['country']
-            userId = request.form['id']
-            if not re.match(r'[A-Za-z0-9]+', userName):
-                message = 'Name must contain only characters and numbers!'
-            else:
-                cursor.execute('UPDATE users SET name=%s, role=%s, country=%s WHERE id=%s', (userName, role, country, userId,))
-                connection.commit()
-                message = 'User updated!'
-                return redirect(url_for('users'))
-        elif request.method == 'POST':
-            message = 'Please fill out the form!'
-        return render_template('edit.html', message=message, editUser=editUser)
-    return redirect(url_for('login'))
-
-@app.route('/password_change', methods=['GET', 'POST'])
-def password_change():
-    message = ''
-    if 'loggedin' in session:
-        changePassUserId = request.args.get('id')
-        if request.method == 'POST' and 'password' in request.form and 'confirm_pass' in request.form and 'userid' in request.form:
-            password = request.form['password']
-            confirm_pass = request.form['confirm_pass']
-            userId = request.form['id']
-            if not password or not confirm_pass:
-                message = 'Please fill out the form!'
-            elif password != confirm_pass:
-                message = 'Confirm password is not equal!'
-            else:
-                cursor = connection.cursor()
-                cursor.execute('UPDATE users SET password=%s WHERE id=%s', (password, userId,))
-                connection.commit()
-                message = 'Password updated!'
-        elif request.method == 'POST':
-            message = 'Please fill out the form!'
-        return render_template('password_change.html', message=message, changePassUserId=changePassUserId)
-    return redirect(url_for('login'))
-
-@app.route('/view')
-def view():
-    if 'loggedin' in session:
-        viewUserId = request.args.get('id')
-        cursor = connection.cursor()
-        cursor.execute('SELECT * FROM users WHERE id = %s', (viewUserId,))
-        user = cursor.fetchone()
-        return render_template('view.html', user=user)
-    return redirect(url_for('login'))
-
-@app.route('/remove/<int:userid>', methods=['GET', 'POST'])
-def remove(userid):
-    cursor = connection.cursor()
-    cursor.execute('DELETE FROM users WHERE id = %s', (userid,))
-    connection.commit()
-    message ='User deleted!'
-    return redirect(url_for('users', message=message))
 
 
 @app.route('/logout')

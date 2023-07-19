@@ -151,16 +151,31 @@
         <div class="row">
           <div class="col md-12">
             <h1 class="h3 mb-0 text-gray-800">Product List Category</h1>
+            <div id="mydiv">
             <div class="btn-group" role="group" aria-label="Category Buttons">
-              <button type="button" class="btn btn-outline-dark" data-category="all">All</button>
+              <button type="button" class="btn btn-outline-dark2" data-category="all" style="border-color: #5a5c69;">All</button>
               <button type="button" class="btn btn-outline-dark" data-category="Home Decor">Home Decor</button>
-             
               <button type="button" class="btn btn-outline-dark" data-category="Outdoor Decor">Outdoor Decor</button>
               <button type="button" class="btn btn-outline-dark" data-category="Furniture">Furniture</button>
               <button type="button" class="btn btn-outline-dark" data-category="Fashion">Fashion</button>
             </div>
             <button type="button" class="btn btn-info float-right mb-3" data-toggle="modal" data-target="#myModal">Add Product</button>
-                
+          </div>
+<script>
+  var header = document.getElementById("mydiv");
+  var btns = header.getElementsByClassName("btn");
+  for (var i = 0; i < btns.length; i++){
+    btns[i].addEventListener("click", function () {
+      var current = 
+      document.getElementsByClassName("btn-outline-dark2")
+      current[0].className =
+      current[0].className.replace("btn-outline-dark2", "");
+      this.className += " btn-outline-dark2";
+    });
+    
+  }
+</script>
+
             {% with messages = get_flashed_messages() %}
             {% if messages %}
             {% for message in messages %}
@@ -195,7 +210,7 @@
                   <a href="/update/{{ row.0 }}" class="btn-edit" data-toggle="modal" data-target="#modaledit{{ row.0 }}"><span class="material-symbols-outlinededit">
                     edit
                     </span></a>
-                  <a href="/delete/{{ row.0 }}" class="btn-delete" onclick="return confirm('Are You Sure For Delete?')"><span class="material-symbols-outlineddelete">
+                  <a href="/delete/{{ row.0 }}" class="btn-delete" onclick="return confirm('Do you want to delete this product?')"><span class="material-symbols-outlineddelete">
                     delete
                     </span></a>
                   <a href="{{ url_for('print', barcode_number=row[1]) }}" class="btn-print" type="button"><span class="material-symbols-outlinedprint">print</span></a>
@@ -324,16 +339,6 @@
     {% endblock %}
 
     <!-- End of Main Content -->
-
-             <!-- Footer -->
-             <footer class="sticky-footer bg-white">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; EM-AR Handicraft 2023</span>
-                    </div>
-                </div>
-            </footer>
-            <!-- End of Footer -->
 
         
         <!-- End of Content Wrapper -->
