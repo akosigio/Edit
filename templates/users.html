@@ -21,7 +21,7 @@
     <link href="/static/css/sb-admin-2.min.css" rel="stylesheet">
     <link href="/static/css/barcode.css" rel="stylesheet">
 
-    <link><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
 
 
   </head>
@@ -155,10 +155,7 @@
                       <thead>
                           <tr>
                               <th>Name</th>
-                              <th>Email</th>
-                              <th>Password</th>
                               <th>Role</th>
-                              <th>Country</th>
                               <th></th>
                               <th></th>
                               <th></th>
@@ -168,11 +165,7 @@
                           {% for user in users %}
                               <tr>
                                   <td>{{ user[1] }}</td>
-                                  <td>{{ user[2] }}</td>
-                                  <td>{{ user[3] }}</td>
                                   <td>{{ user[4] }}</td>
-                                  <td>{{ user[5] }}</td>
-      
                                   <td>
                                       <button type="button" class="btn btn-primary update-btn" data-toggle="modal" data-target="#updateModal" data-id="{{ user[0] }}" data-name="{{ user[1] }}" data-role="{{ user[3] }}" data-country="{{ user[4] }}">Update</button>
                                   </td>
@@ -285,28 +278,29 @@
         </div>
     </div>
 {% endblock %}
+ 
 
-{% block script %}
-<script>
-  $(document).ready(function() {
-      // Update modal
-      $('.update-btn').click(function() {
-          $('#edit-id').val($(this).data('id'));
-          $('#edit-name').val($(this).data('name'));
-          $('#edit-email').val($(this).data('email'));
-          $('#edit-role').val($(this).data('role'));
-          $('#edit-country').val($(this).data('country'));
-      });
-  });
-</script>
-{% endblock %}
- <!-- Footer -->
- <footer class="sticky-footer bg-white">
-  <div class="container my-auto">
-      <div class="copyright text-center my-auto">
-          <span>Copyright &copy; EM-AR Handicraft 2023</span>
-      </div>
-  </div>
+                {% block script %}
+                <script>
+                    $(document).ready(function () {
+                        // Update modal
+                        $('.update-btn').click(function () {
+                            $('#edit-id').val($(this).data('id'));
+                            $('#edit-name').val($(this).data('name'));
+                            $('#edit-email').val($(this).data('email'));
+                            $('#edit-role').val($(this).data('role'));
+                            $('#edit-country').val($(this).data('country'));
+                        });
+                    });
+                </script>
+                {% endblock %}
+<!-- Footer -->
+<footer class="sticky-footer bg-white">
+    <div class="container my-auto">
+        <div class="copyright text-center my-auto">
+            <span>Copyright &copy; EM-AR Handicraft 2023</span>
+        </div>
+    </div>
 </footer>
 <!-- End of Footer -->
 
@@ -321,25 +315,26 @@
 <i class="fas fa-angle-up"></i>
 </a>
 
-<!-- Logout Modal-->
-<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-aria-hidden="true">
-<div class="modal-dialog" role="document">
-<div class="modal-content">
-  <div class="modal-header">
-      <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-      <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">×</span>
-      </button>
-  </div>
-  <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-  <div class="modal-footer">
-      <button class="btn btn-secondary" value="logout" type="button" data-dismiss="modal">Cancel</button>
-      <a class="btn btn-danger" href="login">Logout</a>
-  </div>
-</div>
-</div>
-</div>
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" value="logout" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-danger" href="login">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
 <!-- Bootstrap core JavaScript-->
 <script src="/static/vendor/jquery/jquery.min.js"></script>
 <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

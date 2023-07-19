@@ -5,6 +5,7 @@ from flask import Flask, flash, get_flashed_messages,make_response,redirect, ren
 import mysql.connector
 import MySQLdb.cursors
 import barcode
+import hashlib
 from barcode.writer import ImageWriter
 from PIL import ImageFont
 from barcode import UPCA
@@ -22,8 +23,8 @@ def index():
 
 @app.route('/dashboard')
 def home():
-    if 'loggedin' in session:
-        return render_template('index.html', username=session['username'])
+    if 'name' in session:
+        return render_template('index.html', name=session['name'])
     else:
         return redirect(url_for('login'))
 
@@ -31,100 +32,21 @@ def home():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
+        email = request.form['email']
         password = request.form['password']
-        remember = request.form.get('remember')
-        cursor.execute('SELECT * FROM user WHERE username=%s and password=%s', (username, password))
+        cursor = connection.cursor()
+        cursor.execute("SELECT * FROM users WHERE email = %s AND password = %s", (email, hashlib.md5(password.encode()).hexdigest()))
         record = cursor.fetchone()
         if record:
-            session['loggedin'] = True
-            session['username'] = record[1]
-            if remember:
-                # If the 'remember' checkbox is checked, set a cookie to remember the user
-                resp = make_response(redirect(url_for('home')))
-                resp.set_cookie('username', username)
-                return resp
+            session['name'] = record[1]
+            if record[4] == 'admin':
+                return redirect(url_for('home'))
+            elif record[4] == 'user':
+                return redirect(url_for('user'))
             return redirect(url_for('home'))
         else:
-           flash('Incorrect username or password. Please try again.')
+            flash('Incorrect username or password. Please try again.')
     return render_template('login.html')
-
-
-@app.route('/print/<string:barcode_number>', methods=['GET'])
-def print(barcode_number):
-    return render_template('print-page.html', barcode_number=barcode_number)
-
-@app.route('/insert', methods=['POST'])
-def insert():
-    if request.method == 'POST':
-        p_name = request.form.get('p_name')
-        price = request.form.get('price')
-        quantity = request.form.get('quantity')
-        m_category = request.form.get('m_category')
-        # Check if m_category is present in the request
-        if m_category is None:
-            flash("m_category is missing in the request")
-            return redirect(url_for('product'))
-        
-        # generate the barcode number
-        barcode_number = generate_random_number()
-        # set the barcode format
-        barcode_format = UPCA(barcode_number)
-        # add product info to the barcode
-        product_info = f"{barcode_number}\n PHP {price}.00 {p_name}"
-        # configure barcode saving options
-        saving_options = {
-            'quiet_zone': 3.0,
-            'font_size': 8,
-            'text_distance': 3.0
-        }
-        # generate the barcode image and save it
-        barcode_path = f"static/img/{barcode_number}"
-        barcode_format.save(barcode_path, options=saving_options, text=product_info)
-        cursor = connection.cursor()
-        cursor.execute("INSERT INTO product (p_name, price, quantity, m_category, barcode) VALUES (%s, %s, %s, %s, %s)", (p_name, price, quantity, m_category, barcode_number))
-        connection.commit()
-        flash("Data Inserted Successfully")
-        return redirect(url_for('product'))
-
-
-@app.route('/delete/<string:id_data>', methods=['GET'])
-def delete(id_data):
-    cursor = connection.cursor()
-    cursor.execute("DELETE FROM product WHERE id=%s", (id_data,))
-    connection.commit()
-    flash("Record Has Been Deleted Successfully")
-    return redirect(url_for('product'))
-
-
-@app.route('/update', methods=['POST', 'GET'])
-def update():
-    if request.method == 'POST':
-        id_data = request.form['id']
-        p_name = request.form['p_name']
-        price = request.form['price']
-        quantity = request.form['quantity']
-        m_category = request.form['m_category']
-        cursor = connection.cursor()
-        cursor.execute("UPDATE product SET p_name=%s, price=%s, quantity=%s, m_category=%s WHERE id=%s", (p_name, price, quantity, m_category, id_data))
-        connection.commit()
-        flash("Data Updated Successfully")
-        return redirect(url_for('product'))
-
-
-# A function to generate a 12-digit random number for barcode
-def generate_random_number():
-    number = ""
-    for i in range(12):
-        number += str(random.randint(0, 9))
-    return number
-
-@app.route('/product')
-def product():
-    cursor.execute("SELECT * FROM product")
-    data = cursor.fetchall()
-    messages = get_flashed_messages()
-    return render_template('product.html', product=data, messages=messages)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -206,6 +128,85 @@ def remove(userid):
     connection.commit()
     message ='User deleted!'
     return redirect(url_for('users', message=message))
+
+
+@app.route('/print/<string:barcode_number>', methods=['GET'])
+def print(barcode_number):
+    return render_template('print-page.html', barcode_number=barcode_number)
+
+@app.route('/insert', methods=['POST'])
+def insert():
+    if request.method == 'POST':
+        p_name = request.form.get('p_name')
+        price = request.form.get('price')
+        quantity = request.form.get('quantity')
+        m_category = request.form.get('m_category')
+        # Check if m_category is present in the request
+        if m_category is None:
+            flash("m_category is missing in the request")
+            return redirect(url_for('product'))
+        
+        # generate the barcode number
+        barcode_number = generate_random_number()
+        # set the barcode format
+        barcode_format = UPCA(barcode_number)
+        # add product info to the barcode
+        product_info = f"{barcode_number}\n PHP {price}.00 {p_name}"
+        # configure barcode saving options
+        saving_options = {
+            'quiet_zone': 3.0,
+            'font_size': 8,
+            'text_distance': 3.0
+        }
+        # generate the barcode image and save it
+        barcode_path = f"static/img/{barcode_number}"
+        barcode_format.save(barcode_path, options=saving_options, text=product_info)
+        cursor = connection.cursor()
+        cursor.execute("INSERT INTO product (p_name, price, quantity, m_category, barcode) VALUES (%s, %s, %s, %s, %s)", (p_name, price, quantity, m_category, barcode_number))
+        connection.commit()
+        flash("Data Inserted Successfully")
+        return redirect(url_for('product'))
+
+
+@app.route('/delete/<string:id_data>', methods=['GET'])
+def delete(id_data):
+    cursor = connection.cursor()
+    cursor.execute("DELETE FROM product WHERE id=%s", (id_data,))
+    connection.commit()
+    flash("Record Has Been Deleted Successfully")
+    return redirect(url_for('product'))
+
+
+@app.route('/update', methods=['POST', 'GET'])
+def update():
+    if request.method == 'POST':
+        id_data = request.form['id']
+        p_name = request.form['p_name']
+        price = request.form['price']
+        quantity = request.form['quantity']
+        m_category = request.form['m_category']
+        cursor = connection.cursor()
+        cursor.execute("UPDATE product SET p_name=%s, price=%s, quantity=%s, m_category=%s WHERE id=%s", (p_name, price, quantity, m_category, id_data))
+        connection.commit()
+        flash("Data Updated Successfully")
+        return redirect(url_for('product'))
+
+
+# A function to generate a 12-digit random number for barcode
+def generate_random_number():
+    number = ""
+    for i in range(12):
+        number += str(random.randint(0, 9))
+    return number
+
+@app.route('/product')
+def product():
+    cursor.execute("SELECT * FROM product")
+    data = cursor.fetchall()
+    messages = get_flashed_messages()
+    return render_template('product.html', product=data, messages=messages)
+
+
 
 
 @app.route('/logout')
