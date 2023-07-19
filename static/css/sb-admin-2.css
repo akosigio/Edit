@@ -2876,6 +2876,43 @@ fieldset:disabled a.btn {
   box-shadow: 0 0 0 0.2rem rgba(248, 249, 252, 0.5);
 }
 
+
+.btn-outline-dark2 {
+  color: #5a5c69;
+  border-color: #5a5c69;
+}
+
+.btn-outline-dark2:hover {
+  color: #fff;
+  background-color: #333333;
+  border-color: #333333;
+}
+
+.btn-outline-dark2:focus, .btn-outline-dark2.focus {
+  box-shadow: none;
+  background-color: #333333;
+  color: #fff;
+  border-color: #5a5c69;
+}
+
+.btn-outline-dark2.disabled, .btn-outline-dark2:disabled {
+  color: #5a5c69;
+  background-color: transparent;
+  border-color: #5a5c69;
+}
+
+.btn-outline-dark2:not(:disabled):not(.disabled):active, .btn-outline-dark2:not(:disabled):not(.disabled).active,
+.show > .btn-outline-dark.dropdown-toggle {
+  color: #fff;
+  background-color: #5a5c69;
+  border-color: #5a5c69;
+}
+
+.btn-outline-dark2:not(:disabled):not(.disabled):active:focus, .btn-outline-dark2:not(:disabled):not(.disabled).active:focus,
+.show > .btn-outline-dark.dropdown-toggle:focus {
+  box-shadow: none;
+}
+
 .btn-outline-dark {
   color: #5a5c69;
   border-color: #5a5c69;
@@ -6838,9 +6875,8 @@ button.bg-dark:focus {
   color: #333333;
 }
 .material-symbols-outlinedprint:hover{
-  color: indigo;
+  color: #e18012;
 }
-
 
 .btn-print{
   width: 50px;
