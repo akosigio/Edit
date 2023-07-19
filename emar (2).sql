@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 17, 2023 at 05:30 AM
+-- Generation Time: Jul 19, 2023 at 08:07 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -85,6 +85,18 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `country`) VALUES
+(1, 'Renz', 'Renz@gmail.com', 'Renz123', 'admin', 'Dapdap Hoods'),
+(10, 'HAHAHA', 'HAHAHA@gmail.com', 'Renz123', 'user', 'HAHAHAHA'),
+(15, 'Jk', 'JK@gmail.com', 'JK123', 'admin', 'Dapdap'),
+(16, 'Gio', 'Gio1@gmail.com', 'Gio123', 'admin', 'Luad'),
+(17, 'Gio Cabuyao', 'Gio@gmail.com', '108c3c858d61101baca43da2b2eb2eb1', 'admin', ''),
+(18, 'Dungken', 'Dungken@gmail.com', '31f76f93997b77c3bb1275db5d2af210', 'user', '');
+
+--
 -- Indexes for dumped tables
 --
 
@@ -120,7 +132,7 @@ ALTER TABLE `product`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
