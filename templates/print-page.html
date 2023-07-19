@@ -6,9 +6,13 @@
 <body>
     <div class="m-auto text-center">
         {% for i in range(50) %}
-            <img src="/static/img/{{barcode_number}}.svg" alt="barcode image">
+            <div>
+                <p>{{ p_name }}</p>
+                <p>{{ price }}</p>
+                <img src="/static/img/{{barcode_number}}.svg" alt="barcode image">
+            </div>
         {% endfor %}
-     </div>  
+    </div>  
 </body>
 </html>
 <script>

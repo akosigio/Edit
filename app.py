@@ -10,6 +10,8 @@ from barcode.writer import ImageWriter
 from PIL import ImageFont
 from barcode import UPCA
 
+from barcode_generator import generate_barcode
+
 connection = mysql.connector.connect(host='localhost', database='emar', user='root', password='')
 cursor = connection.cursor()
 app = Flask(__name__)
@@ -130,9 +132,9 @@ def remove(userid):
     return redirect(url_for('users', message=message))
 
 
-@app.route('/print/<string:barcode_number>', methods=['GET'])
-def print(barcode_number):
-    return render_template('print-page.html', barcode_number=barcode_number)
+@app.route('/print/<string:barcode_number>/<string:p_name>/<float:price>')
+def print_page(barcode_number, p_name, price):
+    return render_template('print-page.html', barcode_number=barcode_number, p_name=p_name, price=price)
 
 @app.route('/insert', methods=['POST'])
 def insert():
@@ -145,28 +147,17 @@ def insert():
         if m_category is None:
             flash("m_category is missing in the request")
             return redirect(url_for('product'))
+
+        # generate the barcode data
+        barcode_data = generate_barcode(p_name, price, save_path="static/img")
+        barcode_number = barcode_data['barcode_number']
+        barcode_path = barcode_data['image_path']
         
-        # generate the barcode number
-        barcode_number = generate_random_number()
-        # set the barcode format
-        barcode_format = UPCA(barcode_number)
-        # add product info to the barcode
-        product_info = f"{barcode_number}\n PHP {price}.00 {p_name}"
-        # configure barcode saving options
-        saving_options = {
-            'quiet_zone': 3.0,
-            'font_size': 8,
-            'text_distance': 3.0
-        }
-        # generate the barcode image and save it
-        barcode_path = f"static/img/{barcode_number}"
-        barcode_format.save(barcode_path, options=saving_options, text=product_info)
         cursor = connection.cursor()
         cursor.execute("INSERT INTO product (p_name, price, quantity, m_category, barcode) VALUES (%s, %s, %s, %s, %s)", (p_name, price, quantity, m_category, barcode_number))
         connection.commit()
         flash("Data Inserted Successfully")
         return redirect(url_for('product'))
-
 
 @app.route('/delete/<string:id_data>', methods=['GET'])
 def delete(id_data):
