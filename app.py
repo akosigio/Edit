@@ -1,6 +1,7 @@
 import random
 import re
 import MySQLdb
+from click import password_option
 from flask import Flask, flash, get_flashed_messages,make_response,redirect, render_template, request, session, url_for
 import mysql.connector
 import MySQLdb.cursors
@@ -9,12 +10,15 @@ import hashlib
 from barcode.writer import ImageWriter
 from PIL import ImageFont
 from barcode import UPCA
+import pymysql
+from werkzeug.security import generate_password_hash, check_password_hash
 
-connection = mysql.connector.connect(host='localhost', database='emar', user='root', password='')
-cursor = connection.cursor()
 app = Flask(__name__)
 app.secret_key = 'your_secret_key' 
 
+
+connection = mysql.connector.connect(host='localhost', database='emar', user='root', password='')
+cursor = connection.cursor()
 
 @app.route('/')
 def index():
@@ -28,98 +32,98 @@ def home():
     else:
         return redirect(url_for('login'))
 
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-        cursor = connection.cursor()
         cursor.execute("SELECT * FROM users WHERE email = %s AND password = %s", (email, hashlib.md5(password.encode()).hexdigest()))
         record = cursor.fetchone()
         if record:
             session['name'] = record[1]
             if record[4] == 'admin':
                 return redirect(url_for('home'))
-            elif record[4] == 'user':
+            elif record[4] == 'cashier':
                 return redirect(url_for('user'))
             return redirect(url_for('home'))
         else:
             flash('Incorrect username or password. Please try again.')
     return render_template('login.html')
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    message = ''
-    if request.method == 'POST' and 'name' in request.form and 'password' in request.form and 'email' in request.form:
-        userName = request.form['name']
-        password = request.form['password']
-        email = request.form['email']
-        role = request.form['role']
-        country = request.form['country']
-        cursor = connection.cursor()
-        cursor.execute('SELECT * FROM users WHERE email = %s', (email,))
-        account = cursor.fetchone()
-        if account:
-            message = 'User already exists!'
-        elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
-            message = 'Invalid email address!'
-        elif not userName or not password or not email:
-            message = 'Please fill out the form!'
-        else:
-            cursor.execute('INSERT INTO users VALUES (NULL, %s, %s, %s, %s, %s)', (userName, email, password, role, country))
-            connection.commit()
-            message = 'New user created!'
-    elif request.method == 'POST':
-        message = 'Please fill out the form!'
-    return redirect(url_for('users'))
 
+@app.route('/register', methods=['POST'])
+def register():
+    if request.method == 'POST':
+        name = request.form['name']
+        email = request.form['email']
+        password = request.form['password']
+        role = request.form['role']
+        cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
+        record = cursor.fetchone()
+        if record:
+            error = 'Email already exists!'
+            return render_template('users.html', error=error)
+        hashed_password = hashlib.md5(password.encode()).hexdigest()
+        cursor.execute("INSERT INTO users(name, email, password, role) VALUES (%s, %s, %s, %s)", (name, email, hashed_password, role))
+        connection.commit()
+        return redirect(url_for('users', success='Registration successful!'))
+    else:
+        return redirect(url_for('users'))
+    
 @app.route('/users')
 def users():
-    cursor = connection.cursor()
     cursor.execute('SELECT * FROM users')
-    users = cursor.fetchall()
-    return render_template('users.html', users=users)
+    record = cursor.fetchall()
+    return render_template('users.html', users=record)
 
 @app.route('/edit', methods=['GET', 'POST'])
 def edit():
     if request.method == 'POST':
-        user_id = request.form['id']
+        user = request.form['id']
         name = request.form['name']
-        password = request.form['password']
+        email = request.form['email']
         role = request.form['role']
-        country = request.form['country']
-
-        # Update the user details in the database
-        cursor = connection.cursor()
-        cursor.execute('UPDATE users SET name=%s, role=%s, password=%s,country=%s WHERE id=%s', (name, role, password, country, user_id))
+        cursor.execute('UPDATE users SET name=%s, email=%s, role=%s WHERE id=%s', (name, email, role, user))
         connection.commit()
-
         flash('User details updated successfully', 'success')
         return redirect(url_for('users'))
 
-@app.route('/password_change', methods=['GET', 'POST'])
-def password_change():
-    message = ''
-    if 'loggedin' in session:
-        changePassUserId = request.args.get('id')
-        if request.method == 'POST' and 'password' in request.form and 'confirm_pass' in request.form and 'userid' in request.form:
-            password = request.form['password']
-            confirm_pass = request.form['confirm_pass']
-            userId = request.form['id']
-            if not password or not confirm_pass:
-                message = 'Please fill out the form!'
-            elif password != confirm_pass:
-                message = 'Confirm password is not equal!'
-            else:
-                cursor = connection.cursor()
-                cursor.execute('UPDATE users SET password=%s WHERE id=%s', (password, userId,))
-                connection.commit()
-                message = 'Password updated!'
-        elif request.method == 'POST':
-            message = 'Please fill out the form!'
-        return render_template('password_change.html', message=message, changePassUserId=changePassUserId)
-    return redirect(url_for('login'))
+    users = cursor.execute('SELECT * FROM users').fetchall()
+    return render_template('users.html', users=users)
+
+@app.route('/change_password', methods=['POST'])
+def change_password():
+    user_id = request.form['user_id']
+    current_password = request.form['current_password']
+    new_password = request.form['new_password']
+    confirm_password = request.form['confirm_password']
+
+    # Retrieve the user's current password from the database
+    cursor.execute('SELECT password FROM users WHERE id=%s', (user_id,))
+    user = cursor.fetchone()
+    if user is None:
+        # Handle the case where the query returned no results
+        flash('User not found', 'error')
+        return redirect(url_for('users'))
+    current_hashed_password = user[0]
+
+    # Check if the current password entered by the user matches the one in the database
+    if not check_password_hash(current_hashed_password, current_password):
+        flash('Incorrect current password. Please try again.', 'error')
+        return redirect(url_for('users'))
+
+    # Check if the new password and confirmation match
+    if new_password != confirm_password:
+        flash('New password and confirmation do not match. Please try again.', 'error')
+        return redirect(url_for('users'))
+
+    # Hash the new password and update the database
+    hashed_password = generate_password_hash(new_password, method='sha256')
+    cursor.execute('UPDATE users SET password=%s WHERE id=%s', (hashed_password, user_id))
+    connection.commit()
+
+    flash('Password updated successfully', 'success')
+    return redirect(url_for('users'))
 
 @app.route('/remove/<int:userid>', methods=['GET', 'POST'])
 def remove(userid):

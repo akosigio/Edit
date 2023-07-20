@@ -6927,6 +6927,7 @@ color: white;
 .btn-edit:hover{
 background-color: #6610f2;
 }
+
 @media print {
   .d-print-none {
     display: none !important;
